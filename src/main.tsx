@@ -2,21 +2,43 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import CssBaseline from '@mui/material/CssBaseline';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import App from './App.tsx'
+import AppTheme from './theme/AppTheme.tsx';
+import PublicLayout from './pages/public/PublicLayout.tsx';
+import SignInPage from './pages/public/signin/SignInPage.tsx';
+import ProtectedLayout from './pages/protected/ProtectedLayout.tsx';
+import HomePage from './pages/protected/home/HomePage.tsx';
+import { AuthProvider } from './auth/AuthProvider.tsx';
+import SignInByToken from './pages/public/signin/SignInByToken.tsx';
+import ProctoringPage from './pages/protected/proctoring/ProctoringPage.tsx';
 
+const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <CssBaseline/>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+      <AppTheme>
+      <CssBaseline/>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<ProtectedLayout/>} >
+              <Route index element={<HomePage/>}/>
+              <Route path="/proctoring/:examId/room/:roomId" element={<ProctoringPage/>}/>
+          </Route>
+          <Route element={<PublicLayout/>}>
+              <Route path='sign-in' element={<SignInPage/>}/>
+              <Route path='sign-in-by-token' element={<SignInByToken/>}/>
+          </Route>
+           <Route path="*" element={<h1>404 Not Found</h1>} />
+        </Routes>
+      </BrowserRouter>
+      </AppTheme>
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>,
 )
