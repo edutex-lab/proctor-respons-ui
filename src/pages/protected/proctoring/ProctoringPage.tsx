@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import ExamineeList from './components/ExamineeList';
 import ExamInfo from './components/ExamInfo';
+import { Outlet } from 'react-router';
 export default function ProctoringPage(){
     
     return (<Grid container sx={{
@@ -32,7 +33,7 @@ export default function ProctoringPage(){
                     minHeight:"75vh"
                 }}
             >
-                <Typography>Isi Pantauan</Typography>
+               <Outlet/>
             </Grid>
         </Grid>
         )

@@ -12,7 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import type { Examinee } from '../../../../data/data.types';
 import { useQuery } from '@tanstack/react-query';
 import { getLMSDataService } from '../../../../data';
-import { useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import Divider from '@mui/material/Divider';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
@@ -49,10 +49,15 @@ function stringAvatar(name: string) {
 }
 
 function renderRow(props: ListChildComponentProps) {
-  const { index, style, data } = props;
+  const { index, style, data }:{data:Examinee[], index:number, style:React.CSSProperties} = props;
+  // const {examId, roomId} = useParams()
+  const navigate = useNavigate();
   return (
     <ListItem style={style} key={index} component="div" disablePadding>
-      <ListItemButton>
+      <ListItemButton onClick={()=>{
+        navigate( `user/${data[index].lmsUserId}`)
+        
+      }} >
       <ListItemAvatar>
           <Avatar {...stringAvatar(data[index].name)} />
         </ListItemAvatar>

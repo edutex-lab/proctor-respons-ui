@@ -16,6 +16,8 @@ import HomePage from './pages/protected/home/HomePage.tsx';
 import { AuthProvider } from './auth/AuthProvider.tsx';
 import SignInByToken from './pages/public/signin/SignInByToken.tsx';
 import ProctoringPage from './pages/protected/proctoring/ProctoringPage.tsx';
+import Summary from './pages/protected/proctoring/Summary.tsx';
+import Detail from './pages/protected/proctoring/Detail.tsx';
 
 const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
@@ -28,7 +30,10 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route element={<ProtectedLayout/>} >
               <Route index element={<HomePage/>}/>
-              <Route path="/proctoring/:examId/room/:roomId" element={<ProctoringPage/>}/>
+              <Route path="/proctoring/:examId/room/:roomId" element={<ProctoringPage/>}>
+                <Route index element={<Summary/>}/>
+                <Route path="user/:userId" element={<Detail/>}/>
+              </Route>
           </Route>
           <Route element={<PublicLayout/>}>
               <Route path='sign-in' element={<SignInPage/>}/>
