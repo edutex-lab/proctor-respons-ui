@@ -50,14 +50,14 @@ function stringAvatar(name: string) {
 
 function renderRow(props: ListChildComponentProps) {
   const { index, style, data }:{data:Examinee[], index:number, style:React.CSSProperties} = props;
-  // const {examId, roomId} = useParams()
+  const {userId} = useParams()
   const navigate = useNavigate();
   return (
     <ListItem style={style} key={index} component="div" disablePadding>
       <ListItemButton onClick={()=>{
         navigate( `user/${data[index].lmsUserId}`)
         
-      }} >
+      }} selected={userId === data[index].lmsUserId}>
       <ListItemAvatar>
           <Avatar {...stringAvatar(data[index].name)} />
         </ListItemAvatar>

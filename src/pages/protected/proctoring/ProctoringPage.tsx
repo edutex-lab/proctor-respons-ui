@@ -14,7 +14,7 @@ export default function ProctoringPage(){
         <Grid 
                 size={{xs:12, md:4}}
                 sx={{
-                    minHeight:"75vh",
+                    minHeight:"70vh",
                     // border: '1px solid',
                     // borderColor: 'divider',
                     // borderRadius: 1,
@@ -30,7 +30,7 @@ export default function ProctoringPage(){
             <Grid
                 size={{xs:12, md: 8}}
                 sx={{
-                    minHeight:"75vh"
+                    minHeight:"70vh"
                 }}
             >
                <Outlet/>

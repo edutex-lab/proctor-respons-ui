@@ -18,7 +18,7 @@ import SignInByToken from './pages/public/signin/SignInByToken.tsx';
 import ProctoringPage from './pages/protected/proctoring/ProctoringPage.tsx';
 import Summary from './pages/protected/proctoring/Summary.tsx';
 import Detail from './pages/protected/proctoring/Detail.tsx';
-
+import {SnackbarProvider} from 'notistack';
 const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -26,6 +26,10 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
       <AppTheme>
       <CssBaseline/>
+      <SnackbarProvider autoHideDuration={3000} anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'right',
+  }}>
       <BrowserRouter>
         <Routes>
           <Route element={<ProtectedLayout/>} >
@@ -42,6 +46,7 @@ createRoot(document.getElementById('root')!).render(
            <Route path="*" element={<h1>404 Not Found</h1>} />
         </Routes>
       </BrowserRouter>
+      </SnackbarProvider>
       </AppTheme>
       </QueryClientProvider>
     </AuthProvider>
