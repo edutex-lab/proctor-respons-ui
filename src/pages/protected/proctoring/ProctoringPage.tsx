@@ -3,10 +3,14 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import ExamineeList from './components/ExamineeList';
 import ExamInfo from './components/ExamInfo';
-import { Outlet } from 'react-router';
+import { Outlet} from 'react-router';
+import VerificationDialog from './components/VerificationDialog';
+import { useVerification } from '../../../data/VerificationProvider';
+import SendWarningDialog from './components/SendWarningDialog';
 export default function ProctoringPage(){
-    
-    return (<Grid container sx={{
+    const {dialogOpen, setDialogOpen, data, warningDialogOpen, setWarningDialogOpen} = useVerification();
+
+    return (<><Grid container sx={{
         width:"100%",
          maxWidth:"100%",
          
@@ -36,5 +40,8 @@ export default function ProctoringPage(){
                <Outlet/>
             </Grid>
         </Grid>
+        <VerificationDialog open={dialogOpen} onClose={() => setDialogOpen(false)} data={data}/>
+        <SendWarningDialog open={warningDialogOpen} onClose={() => setWarningDialogOpen(false)}  />
+        </>
         )
 }

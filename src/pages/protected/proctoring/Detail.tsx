@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { memo, useEffect, useState } from "react";
-import type { Screenshot } from "../../../data/data.types";
+import type { Examinee, Screenshot } from "../../../data/data.types";
 import { getAppDataServices } from "../../../data";
 import { useParams } from "react-router";
 import { FixedSizeList, type ListChildComponentProps } from "react-window";
@@ -19,12 +19,17 @@ import CircularProgress from "@mui/material/CircularProgress";
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningIcon from '@mui/icons-material/Warning';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { useSnackbar } from "notistack";
+import { useQueryClient } from "@tanstack/react-query";
+import Avatar from "@mui/material/Avatar";
+import { stringAvatar } from "./components/ExamineeList";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { useVerification } from "../../../data/VerificationProvider";
 
 
 // --- Helper function to get chip color based on decision
-const getChipAppearance = (decision:string) => {
+export const getChipAppearance = (decision:string) => {
   switch (decision) {
     case 'Suspicious':
       return { color: 'default', icon: <WarningIcon /> };
@@ -48,10 +53,11 @@ const { index , style, data }:{data:Screenshot[], index:number, style:React.CSSP
   const [proctorCategory, setProctorCategory] = useState(log?.proctorClassificationResult?.category ??'Category');
   // State for the saving button)
   const [isSaving, setIsSaving] = useState(false);
-    const {enqueueSnackbar} = useSnackbar();
+  const {examId} = useParams();
+  const {enqueueSnackbar} = useSnackbar();
   // Construct the full image URL from bucket and path
-   const encodedPath = encodeURIComponent(log?.filePath);
-const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}/o/${encodedPath}?alt=media`;
+  const encodedPath = encodeURIComponent(log?.filePath);
+  const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}/o/${encodedPath}?alt=media`;
 
 
 //   // --- Binary Classification (1st Stage) ---
@@ -80,11 +86,11 @@ const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}
         return;
     }
 
-    console.log(proctorCategory, proctorDecision)
+   
     // console.log(log)
     setIsSaving(true);
     // Simulate an API call
-    await getAppDataServices().setProctorClassificationResult(log.id, { final_decision: proctorDecision })
+    await getAppDataServices().setProctorClassificationResult(examId!,log.id, { final_decision: proctorDecision })
     
     setIsSaving(false);
     enqueueSnackbar(`Proctor verification saved!`,{variant:'success'});
@@ -138,7 +144,7 @@ const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}
 
               {/* Stage 2: Multi-class Classifier */}
               <Box>
-                <Typography variant="overline" color="text.secondary"> AI Verdict</Typography>
+                <Typography variant="overline" color="text.secondary"> AI Proctor Verdict</Typography>
                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 0.5 }}>
                    <Chip
                     label={multiResult?.final_decision}
@@ -162,6 +168,7 @@ const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}
                   
                   <FormControl size="small" sx={{ minWidth: 200 }}>
                     {/* <InputLabel id={`proctor-select-label-${log.id}`}>Decision</InputLabel> */}
+                       <InputLabel id={`category-select-label-${log?.id}`} sx={{top:-6}}>Screen Category</InputLabel>
                     <Select
                       labelId={`proctor-select-label-${log.id}`}
                       value={proctorCategory}
@@ -196,8 +203,9 @@ const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}
                   </FormControl>
                   <FormControl size="small" sx={{ minWidth: 200 }}>
                     {/* <InputLabel id={`proctor-select-label-${log.id}`}>Decision</InputLabel> */}
+                       <InputLabel id={`decision-select-label-${log?.id}`} sx={{top:-6}}>Decision</InputLabel>
                     <Select
-                      labelId={`proctor-select-label-${log.id}`}
+                      labelId={`decision-select-label-${log.id}`}
                       value={proctorDecision}
                       label="Decision"
                       onChange={(e) => setProctorDecision(e.target.value)}
@@ -230,17 +238,27 @@ const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${log?.fileBucket}
 
 export default function Detail(){
     const [data,setData] = useState<Screenshot[]>([]);
-    const {examId, userId} = useParams();
+    const {examId, roomId, userId} = useParams();
+    const {setWarningDialogOpen,setWarningData} = useVerification()
+    const queryClient = useQueryClient();
+    const examinees = queryClient.getQueryData<Examinee[]>(['examinees', roomId]) ?? [];
+   
+
+    let examinee = examinees.find(e=>e.lmsUserId === userId);
+    
+
+
     useEffect(()=>{
         setData([]);
         if(!examId || !userId) return;
 
         let unsubscribe  = getAppDataServices().getListenScreenshotsByUserId(examId, userId,(querySnapshot)=>{
 
-            querySnapshot?.forEach((doc)=>{
-                
-                setData(prev=>[...prev,{...doc.data() as Screenshot, id:doc.id}])
-            })
+          const docs: Screenshot[] = [];
+            querySnapshot?.forEach((doc) => {
+                docs.push({ ...(doc.data() as Screenshot), id: doc.id });
+            });
+            setData(docs); // replace instead of append
         })
 
         return ()=>{
@@ -249,16 +267,80 @@ export default function Detail(){
 
     },[examId, userId])
 
-    return   <Box sx={{ width: '100%', height: '100vh' }}>
-         <Typography variant="h6" sx={{my:1}}>Non Exam Screens Log ({data.length})</Typography>
-      <FixedSizeList
-        height={window.innerHeight} // Full screen height
-        width="100%"
-        itemSize={500} // Height of a single LogItem card
-        itemCount={data.length}
-        itemData={data} // Pass all data to the list
-      >
-        {LogItem}
-      </FixedSizeList>
+    if(data.length === 0) {
+        return <Box sx={{ width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection :"column"}}>
+            {examinee?.lmsUserId && <>
+              <Avatar {...stringAvatar(examinee?.name)} sx={{...stringAvatar(examinee?.name).sx,...{ width: 50, height:50 }}}/>
+        <Typography variant="body2" sx={{my:1, fontSize:18}}>Examinee: {examinee?.name}</Typography>
+        <Typography variant="body2" sx={{my:1, fontSize:18}}>Code: {examinee?.code}</Typography>
+            </>}
+           
+            <Typography variant="h6" sx={{my:1}}> All Clean, No Suspicious or Dishonest Activity Detected!</Typography>
+             <CheckCircleOutlineIcon  sx={{color:"green", fontSize:100}}/>
+            </Box>
+    }
+
+    const countDishonest = data.filter(d=>d.proctorClassificationResult?.final_decision === 'Dishonest').length;
+    const countSuspicious = data.filter(d=>d.proctorClassificationResult?.final_decision === 'Suspicious').length;
+    
+
+
+    return (
+    <Box sx={{ width: '100%', minHeight: '100vh' }}>
+
+            <Typography variant="h6" sx={{my:1}}>Non Exam Screens Log ({data.length})</Typography>
+            
+        <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    }}
+  >
+    {/* Left section: examinee info + counters */}
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+      {examinee?.lmsUserId && (
+        <>
+          <Typography variant="body2" fontWeight="500">
+            Examinee: <Typography component="span" fontWeight="bold">{examinee?.name}</Typography>
+          </Typography>
+          <Typography variant="body2" fontWeight="500">
+            Code: <Typography component="span" fontWeight="bold">{examinee?.code}</Typography>
+          </Typography>
+        </>
+      )}
+
+      <Typography variant="body2" color="warning.main" fontWeight="600">
+        Suspicious: {countSuspicious}
+      </Typography>
+      <Typography variant="body2" color="error.main" fontWeight="600">
+        Dishonest: {countDishonest}
+      </Typography>
     </Box>
+
+    {/* Right section: action button */}
+      {examinee?.lmsUserId && <Button
+      variant="outlined"
+      size="small"
+      startIcon={<WarningAmberIcon />}
+      onClick={() => {
+        setWarningDialogOpen(true)
+        setWarningData(examinee)
+    }}
+    >
+      Send Warning
+    </Button>}
+  </Box>
+         <Divider sx={{mt:1}}/>
+            <FixedSizeList
+                height={window.innerHeight} // Full screen height
+                width="100%"
+                itemSize={500} // Height of a single LogItem card
+                itemCount={data.length}
+                itemData={data} // Pass all data to the list
+            >
+                {LogItem}
+            </FixedSizeList>
+    </Box>
+    )
 }

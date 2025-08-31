@@ -8,14 +8,15 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import NavbarBreadcrumbs from './NavbarBreadcrumbs';
 import MenuButton from './MenuButton';
 import { useAuth } from '../../../auth/AuthProvider';
+import { useVerification } from '../../../data/VerificationProvider';
 // import OptionsMenu from './OptionsMenu';
 // import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
 
 // import Search from './Search';
 
 export default function Header() {
-  const {user} = useAuth()
-  console.log(user)
+  const {user} = useAuth();
+  const {data, setDialogOpen} = useVerification();
   return (
     <Stack
       direction="row"
@@ -35,7 +36,7 @@ export default function Header() {
       <Stack direction="row" sx={{ gap: 1 }}>
         {/* <Search /> */}
         {/* <CustomDatePicker /> */}
-        <MenuButton showBadge aria-label="Open notifications">
+        <MenuButton onClick={()=>{setDialogOpen(true)}} showBadge={data?.length > 0} badgeContent={data?.length} aria-label="Open notifications">
           <NotificationsRoundedIcon />
         </MenuButton>
 

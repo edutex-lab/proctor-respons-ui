@@ -1,4 +1,5 @@
 import type { QuerySnapshot, Timestamp, Unsubscribe } from "firebase/firestore";
+import type { User } from "../auth/auth.types";
 
 export type Examinee = {
     id: string;
@@ -60,6 +61,8 @@ export interface AppDataService{
     setRoomForUsers(examId: string, roomId: string, users: Examinee[]): Promise<void>;
     getListenScreenshotsByUserId(examId: string | undefined,  userId: string | undefined, callback:(querySnapshot: QuerySnapshot | null) => void): Unsubscribe;
     // getListenScreenshotsByRoomId(examId: string, roomId: string)
-    setProctorClassificationResult(screenshotId: string, result: ProctorClassificationResult): Promise<void>;
+    setProctorClassificationResult(examId: string, screenshotId: string, result: ProctorClassificationResult): Promise<void>;
+    getListenVerificationByRoomId(examId: string, roomId: string, callback:(querySnapshot: QuerySnapshot | null) => void): Unsubscribe;
+    sendWarningMessage(examId: string,  userId: string, message: string, createdBy: User): Promise<void>;
 
 }

@@ -8,6 +8,7 @@ import Header from './components/Header';
 // import SideMenu from './components/SideMenu';
 import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../../auth/AuthProvider';
+import { VerificationProvider } from '../../data/VerificationProvider';
 
 export default function ProtectedLayout() {
 
@@ -24,7 +25,7 @@ export default function ProtectedLayout() {
   
   }
   return (
-  
+  <VerificationProvider>
       <Box sx={{ 
         display: 'flex',
         flexDirection:'column',
@@ -58,6 +59,7 @@ export default function ProtectedLayout() {
           </Stack>
         </Box>
       </Box>
+      </VerificationProvider>
   );
 }
 
