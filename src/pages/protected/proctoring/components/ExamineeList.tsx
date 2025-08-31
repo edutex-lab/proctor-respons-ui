@@ -12,9 +12,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import type { Examinee } from '../../../../data/data.types';
 import { useQuery } from '@tanstack/react-query';
 import { getLMSDataService } from '../../../../data';
-import { Link, useNavigate, useParams } from 'react-router';
+import {  useNavigate, useParams } from 'react-router';
 import Divider from '@mui/material/Divider';
-import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Loading from './Loading';
 
@@ -22,7 +21,7 @@ export function stringToColor(string: string) {
   let hash = 0;
   let i;
 
-  /* eslint-disable no-bitwise */
+   
   for (i = 0; i < string.length; i += 1) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
@@ -33,7 +32,7 @@ export function stringToColor(string: string) {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
-  /* eslint-enable no-bitwise */
+   
 
   return color;
 }

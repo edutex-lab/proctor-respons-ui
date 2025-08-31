@@ -1,4 +1,3 @@
-import SideContent from './components/SideContent';
 import SignInCard from './components/SignInCard';
 // import Content from './components/Content';
 

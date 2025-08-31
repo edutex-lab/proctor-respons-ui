@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 
 // It's recommended to install these packages if you haven't already:
 // npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
@@ -7,15 +5,14 @@ import * as React from 'react';
 // MUI Components
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
+
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import CardHeader from '@mui/material/CardHeader';
+
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -26,7 +23,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import TimerIcon from '@mui/icons-material/Timer';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { type ExamInfo } from '../../../../data/data.types';
 import { useQuery } from '@tanstack/react-query';
 import { getLMSDataService } from '../../../../data';

@@ -21,9 +21,7 @@ import Chip, { type ChipProps } from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import CircularProgress from '@mui/material/CircularProgress';
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
-import { set } from 'lodash';
 import InputLabel from '@mui/material/InputLabel';
 import SaveIcon from '@mui/icons-material/Save';
 import NextIcon from '@mui/icons-material/NavigateNext';
@@ -60,7 +58,7 @@ export default function VerificationDialog({open, onClose, data}: VerificationDi
     const {examId, roomId} =useParams()
     const queryClient = useQueryClient();
     const examinees = queryClient.getQueryData<Examinee[]>(['examinees', roomId]) ?? [];
-    let examinee = examinees.find(e=>e.lmsUserId?.toString()=== log?.userId?.toString());
+    const examinee = examinees.find(e=>e.lmsUserId?.toString()=== log?.userId?.toString());
     // State for the editable proctor classification
       const [proctorDecision, setProctorDecision] = React.useState(log?.proctorClassificationResult?.final_decision ??'Decision');
       const [proctorCategory, setProctorCategory] =  React.useState(log?.proctorClassificationResult?.category ??'Category');

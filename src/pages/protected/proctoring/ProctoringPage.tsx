@@ -1,5 +1,4 @@
 
-import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import ExamineeList from './components/ExamineeList';
 import ExamInfo from './components/ExamInfo';

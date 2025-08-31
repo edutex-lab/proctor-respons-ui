@@ -1,5 +1,4 @@
 
-import * as React from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -8,7 +7,7 @@ import Header from './components/Header';
 // import SideMenu from './components/SideMenu';
 import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../../auth/AuthProvider';
-import { VerificationProvider } from '../../data/VerificationProvider';
+import VerificationProvider from '../../data/VerificationProvider';
 
 export default function ProtectedLayout() {
 

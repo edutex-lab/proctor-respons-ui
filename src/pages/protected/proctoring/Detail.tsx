@@ -244,7 +244,7 @@ export default function Detail(){
     const examinees = queryClient.getQueryData<Examinee[]>(['examinees', roomId]) ?? [];
    
 
-    let examinee = examinees.find(e=>e.lmsUserId === userId);
+    const examinee = examinees.find(e=>e.lmsUserId === userId);
     
 
 
@@ -252,7 +252,7 @@ export default function Detail(){
         setData([]);
         if(!examId || !userId) return;
 
-        let unsubscribe  = getAppDataServices().getListenScreenshotsByUserId(examId, userId,(querySnapshot)=>{
+        const unsubscribe  = getAppDataServices().getListenScreenshotsByUserId(examId, userId,(querySnapshot)=>{
 
           const docs: Screenshot[] = [];
             querySnapshot?.forEach((doc) => {

@@ -91,3 +91,6 @@ export const VerificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     </VerificationContext.Provider>
   );
 };
+
+
+export default VerificationProvider;

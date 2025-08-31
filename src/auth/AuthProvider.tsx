@@ -7,7 +7,7 @@ const auth = firebaseAuthService; // could be swapped later
 
 const AuthContext = createContext<{ user: User | null; auth: AuthService } | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setLoading] = useState<boolean>(true);
   

@@ -13,7 +13,7 @@ import PublicLayout from './pages/public/PublicLayout.tsx';
 import SignInPage from './pages/public/signin/SignInPage.tsx';
 import ProtectedLayout from './pages/protected/ProtectedLayout.tsx';
 import HomePage from './pages/protected/home/HomePage.tsx';
-import { AuthProvider } from './auth/AuthProvider.tsx';
+import AuthProvider from './auth/AuthProvider.tsx';
 import SignInByToken from './pages/public/signin/SignInByToken.tsx';
 import ProctoringPage from './pages/protected/proctoring/ProctoringPage.tsx';
 import Summary from './pages/protected/proctoring/Summary.tsx';
