@@ -297,6 +297,18 @@ export default function VerificationDialog({open, onClose, data}: VerificationDi
                   Accept AI Verdict
                   </Button>
                 </Box>
+                <Typography sx={{mt:1}}>Classification Guide:</Typography>
+                <ol style={{marginTop:0}}>
+                              <Typography component="li"><span style={{fontWeight:"bold", color:'green'}}>Clean</span>. The screenshots depict normal activities with no
+                indication of dishonest behavior by the participant.</Typography>
+                <Typography component="li"><span style={{fontWeight:"bold",color:'orange'}}>Suspicious</span>. The screenshots reflect unusual and suspicious behaviors, though it does not definitively indicate
+                cheating.
+                </Typography>
+                <Typography component="li">
+                <span style={{fontWeight:"bold", color:'red'}}>Dishonest</span> The screenshots reveal cheating behaviors
+                carried out by the participants.
+                </Typography>
+                </ol>
               </Box>
             </CardContent>
           </Grid>
