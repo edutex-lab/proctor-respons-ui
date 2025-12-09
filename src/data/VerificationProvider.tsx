@@ -8,10 +8,12 @@ type VerificationContextType = {
   data: Screenshot[];
   warningData: Examinee | null;
   dialogOpen: boolean;
-  warningDialogOpen:boolean;
+  warningDialogOpen: boolean;
   setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setWarningDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setWarningData: React.Dispatch<React.SetStateAction<Examinee | null>>;
+  verificationType: string;
+  setVerificationType: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const VerificationContext = createContext<VerificationContextType | undefined>(undefined);
@@ -29,13 +31,14 @@ export const VerificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [warningData, setWarningData] = useState<Examinee | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [warningDialogOpen, setWarningDialogOpen] = useState(false);
+  const [verificationType, setVerificationType] = useState<string>('all');
   const { examId, roomId } = useParams();
   const initialLoad = useRef(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
- 
+
   useEffect(() => {
     audioRef.current = new Audio("/notification.mp3");
-    }, []);
+  }, []);
 
   useEffect(() => {
     if (!examId || !roomId) return;
@@ -57,11 +60,11 @@ export const VerificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           querySnapshot?.docChanges().forEach((change) => {
             if (change.type === "added") {
               const newDoc = { ...(change.doc.data() as Screenshot), id: change.doc.id };
-              setData((prev) => [newDoc,...prev]);
+              setData((prev) => [newDoc, ...prev]);
               setDialogOpen(true); // only for new doc
-               if (audioRef.current) {
-                    audioRef.current.play().catch(console.warn);
-                }
+              if (audioRef.current) {
+                audioRef.current.play().catch(console.warn);
+              }
             }
 
             if (change.type === "modified") {
@@ -86,7 +89,7 @@ export const VerificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, [examId, roomId]);
 
   return (
-    <VerificationContext.Provider value={{ data, dialogOpen, setDialogOpen, warningDialogOpen, setWarningDialogOpen, setWarningData, warningData }}>
+    <VerificationContext.Provider value={{ data, dialogOpen, setDialogOpen, warningDialogOpen, setWarningDialogOpen, setWarningData, warningData, verificationType, setVerificationType }}>
       {children}
     </VerificationContext.Provider>
   );
