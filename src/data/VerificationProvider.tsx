@@ -62,6 +62,7 @@ export const VerificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
               const newDoc = { ...(change.doc.data() as Screenshot), id: change.doc.id };
               setData((prev) => [newDoc, ...prev]);
               setDialogOpen(true); // only for new doc
+              setVerificationType("all");
               if (audioRef.current) {
                 audioRef.current.play().catch(console.warn);
               }
