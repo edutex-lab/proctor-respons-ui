@@ -54,16 +54,35 @@ interface VerificationDialogProps {
 }
 
 export default function VerificationDialog({ open, onClose, data }: VerificationDialogProps) {
-  const [index, setIndex] = React.useState(0);
+  const [currentId, setCurrentId] = React.useState<string | null>(null);
   const [imgLoaded, setImgLoaded] = React.useState(false);
 
-  React.useEffect(() => {
-    if (open) {
-      setIndex(0);
-    }
-  }, [open, data]);
+  const [lastOpen, setLastOpen] = React.useState(open);
 
-  const log = data[index];
+  React.useEffect(() => {
+    // If dialog just opened (transition from false to true)
+    if (open && !lastOpen && data.length > 0) {
+      setCurrentId(data[0].id);
+    }
+    // If dialog is open and no currentId is set (initial laod)
+    else if (open && data.length > 0 && !currentId) {
+      setCurrentId(data[0].id);
+    }
+    // Handle stable navigation: if currentId is set but no longer in data
+    else if (open && data.length > 0 && currentId) {
+      const exists = data.find(d => d.id === currentId);
+      if (!exists) {
+        setCurrentId(data[0].id);
+      }
+    }
+    setLastOpen(open);
+  }, [open, data, currentId, lastOpen]);
+
+  const currentIndex = React.useMemo(() => {
+    return data.findIndex(d => d.id === currentId);
+  }, [data, currentId]);
+
+  const log = currentIndex !== -1 ? data[currentIndex] : data[0];
 
   React.useEffect(() => {
     setImgLoaded(false);
@@ -117,12 +136,33 @@ export default function VerificationDialog({ open, onClose, data }: Verification
     console.log(proctorCategory, proctorDecision)
     // console.log(log)
     setIsSaving(true);
+
+    // Determine next ID to jump to before current is removed
+    let nextId = null;
+    if (data.length > 1) {
+      // If there's a next item, take it. 
+      // If we are at the end, take the previous item.
+      // If we are essentially removing the current item, 
+      // the item at currentIndex + 1 will shift to currentIndex (if it exists).
+      // So checking index + 1 is checking the valid neighbor.
+      if (currentIndex < data.length - 1) {
+        nextId = data[currentIndex + 1].id;
+      } else if (currentIndex > 0) {
+        nextId = data[currentIndex - 1].id;
+      }
+    }
+
     // Simulate an API call
     await getAppDataServices().setProctorClassificationResult(examId!, log?.id, { final_decision: proctorDecision })
 
     setIsSaving(false);
     setProctorCategory("Category");
     setProctorDecision("Decision");
+
+    if (nextId) {
+      setCurrentId(nextId);
+    }
+
     enqueueSnackbar(`Proctor verification saved!`, { variant: 'success' });
 
   };
@@ -363,15 +403,21 @@ export default function VerificationDialog({ open, onClose, data }: Verification
       {data.length > 0 ? <DialogActions>
         <Button
 
-          onClick={() => setIndex((prev) => prev - 1)}
-          disabled={index === 0}   // disable if already at first item
+          onClick={() => {
+            const newIndex = currentIndex - 1;
+            if (newIndex >= 0) setCurrentId(data[newIndex].id);
+          }}
+          disabled={currentIndex <= 0}   // disable if already at first item
           startIcon={<PreviousIcon />} variant='outlined'>
           Preivous
         </Button>
         <Button
-          onClick={() => setIndex((prev) => prev + 1)}
+          onClick={() => {
+            const newIndex = currentIndex + 1;
+            if (newIndex < data.length) setCurrentId(data[newIndex].id);
+          }}
           variant='outlined'
-          disabled={index === data.length - 1 || data.length === 0}  // disable if already at last item
+          disabled={currentIndex === data.length - 1 || data.length === 0}  // disable if already at last item
           endIcon={<NextIcon />} >
           Next
         </Button>
