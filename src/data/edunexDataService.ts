@@ -6,56 +6,73 @@ const lms = "edunex";
 const lmsApi = createLmsApi(lms);
 
 export const edunexDataServices: LMSDataService = {
-    async getExaminees(examId:string,roomId:string) {
-    
-      const req = await  lmsApi.client.get(lmsApi.endpoints.examinees,{params:{
-            "filter[class_id][is]":roomId,
-            "sort":"code",
-            "page[limit]":"0",
-            "page[offset]":"0",
-        }});
+    async getExaminees(examId: string, roomId: string) {
 
-    const data: Examinee[] = req.data.data.map((item:any):Examinee=>({
-        id:item.id?.toString(),
-        lmsUserId:item.attributes.user_id?.toString(),
-        name:item.attributes.name,
-        code:item.attributes.code,
+        const req = await lmsApi.client.get(lmsApi.endpoints.examinees, {
+            params: {
+                "filter[class_id][is]": roomId,
+                "sort": "code",
+                "page[limit]": "0",
+                "page[offset]": "0",
+            }
+        });
+
+        const data: Examinee[] = req.data.data.map((item: any): Examinee => ({
+            id: item.id?.toString(),
+            lmsUserId: item.attributes.user_id?.toString(),
+            name: item.attributes.name,
+            code: item.attributes.code,
         }));
 
         const appDataService = getAppDataServices();
-        
-        await appDataService.setRoomForUsers(examId,roomId,data);
-       
+
+        await appDataService.setRoomForUsers(examId, roomId, data);
+
         return data;
-    
+
     },
-    async getExamInfo(examId:string) {
-       
-        const req = await lmsApi.client.get(lmsApi.endpoints.exams?.replace(":examId",examId),{params:{
-            "include":"course,course.classes"
-        }});
+    async getExamInfo(examId: string) {
+
+        const req = await lmsApi.client.get(lmsApi.endpoints.exams?.replace(":examId", examId), {
+            params: {
+                "include": "course,course.classes"
+            }
+        });
 
         const data = req.data.data;
-        const course = req.data.included.find((item:any)=>item.id?.toString()===data.attributes.course_id?.toString());
-        const classes = req.data.included.filter((item:any)=>item.type==="classes").map((item:any):ClassRoom=>({
-            id:item.id?.toString(),
-            name:item.attributes.name,
+        const course = req.data.included.find((item: any) => item.id?.toString() === data.attributes.course_id?.toString());
+        const classes = req.data.included.filter((item: any) => item.type === "classes").map((item: any): ClassRoom => ({
+            id: item.id?.toString(),
+            name: item.attributes.name,
         }));
-    
 
-            return {
-                id: data.id?.toString(),
-                name: data.attributes.name,
-                isDuration: data.attributes.is_duration,
-                duration: data.attributes.duration,
-                startAt: data.attributes.start_at,
-                endAt: data.attributes.end_at,
-                courseId: course?.id?.toString(),
-                courseName: course?.attributes.name,
-                courseCode: course?.attributes.code,
-                courseThumbnail: course?.attributes.thumbnail,
-                classRooms:classes,
-                
-            }
+
+        return {
+            id: data.id?.toString(),
+            name: data.attributes.name,
+            isDuration: data.attributes.is_duration,
+            duration: data.attributes.duration,
+            startAt: data.attributes.start_at,
+            endAt: data.attributes.end_at,
+            courseId: course?.id?.toString(),
+            courseName: course?.attributes.name,
+            courseCode: course?.attributes.code,
+            courseThumbnail: course?.attributes.thumbnail,
+            classRooms: classes,
+
+        }
+    },
+    async getExamineeInfo(examId: string, userId: string, examineeId: string) {
+        const req = await lmsApi.client.get(lmsApi.endpoints.examineeInfo?.replace(":examId", examId).replace(":studentId", examineeId));
+        const data = req.data.data?.find((item: any) => item.attributes?.start_at && item.attributes?.finished_at);
+
+        return {
+            id: examineeId,
+            lmsUserId: userId,
+            name: data.attributes.student_name?.toString(),
+            code: data.attributes.student_code?.toString(),
+            start_at: data.attributes.start_at?.toString(),
+            finished_at: data.attributes.finished_at?.toString(),
+        }
     }
 }

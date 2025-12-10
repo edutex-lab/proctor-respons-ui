@@ -31,14 +31,14 @@ import Loading from './Loading';
 
 
 
-const ExamInfoCard = ({ examData }:{ examData: ExamInfo | undefined }) => {
+const ExamInfoCard = ({ examData }: { examData: ExamInfo | undefined }) => {
 
-    const {examId, roomId} = useParams()
-    const navigate = useNavigate()
+  const { examId, roomId } = useParams()
+  const navigate = useNavigate()
 
   // Helper function to format dates.
   // For production apps, consider using a robust library like date-fns or dayjs.
-  const formatDate = (dateString:string) => {
+  const formatDate = (dateString: string) => {
     if (!dateString) return 'Not specified';
     return new Date(dateString).toLocaleString('en-US', {
       year: 'numeric',
@@ -54,7 +54,7 @@ const ExamInfoCard = ({ examData }:{ examData: ExamInfo | undefined }) => {
     navigate(`/proctoring/${examId}/room/${selectedRoomId}`);
   }
 
-  if(!examData) return null
+  if (!examData) return null
 
   return (
     <Card sx={{ maxWidth: 450, boxShadow: 3, borderRadius: 3, m: 2 }}>
@@ -91,7 +91,7 @@ const ExamInfoCard = ({ examData }:{ examData: ExamInfo | undefined }) => {
               </Typography>
               {examData.courseCode && <Chip label={examData.courseCode} size="small" variant="outlined" />}
             </Stack>
-             {/* Classroom Dropdown */}
+            {/* Classroom Dropdown */}
             <FormControl fullWidth>
               {/* <InputLabel id="classroom-select-label">Classroom</InputLabel> */}
               <Select
@@ -135,7 +135,7 @@ const ExamInfoCard = ({ examData }:{ examData: ExamInfo | undefined }) => {
                 <strong>Ends:</strong> {formatDate(examData.endAt)}
               </Typography>
             </Stack>
-             {/* <Stack direction="row" spacing={2} alignItems="center">
+            {/* <Stack direction="row" spacing={2} alignItems="center">
               <VpnKeyIcon color="action" />
               <Typography variant="body2" color="text.secondary" sx={{ userSelect: 'all' }}>
                 Exam ID: {examData.id || 'N/A'}
@@ -149,33 +149,31 @@ const ExamInfoCard = ({ examData }:{ examData: ExamInfo | undefined }) => {
 };
 
 export default function ExamInformation() {
-const {examId} = useParams();
-const {data, isLoading} = useQuery({
-    queryKey: ['examInfo',examId],
+  const { examId } = useParams();
+  const { data, isLoading } = useQuery({
+    queryKey: ['examInfo', examId],
     queryFn: async () => {
-        console.log("examId",examId);
-        const exam = await getLMSDataService().getExamInfo(examId!);
-        console.log(exam)
-        return exam;
+      const exam = await getLMSDataService().getExamInfo(examId!);
+      return exam;
     },
-})
+  })
 
-console.log("how",data,isLoading)
 
-if(isLoading){
-    return <Loading/>
-}
+  if (isLoading) {
+    return <Loading />
+  }
   return (
     <Box
-      sx={{ width: '100%', 
+      sx={{
+        width: '100%',
         // height: 400, maxWidth: 360, 
-        px:1,
+        px: 1,
         // bgcolor: 'background.paper'
-    }}
+      }}
     >
-         <Typography variant="h6" sx={{my:1}}>Exam Info</Typography>
-         <ExamInfoCard examData={data} />
-      
+      <Typography variant="h6" sx={{ my: 1 }}>Exam Info</Typography>
+      <ExamInfoCard examData={data} />
+
     </Box>
   );
 }

@@ -18,36 +18,36 @@ import SignInByToken from './pages/public/signin/SignInByToken.tsx';
 import ProctoringPage from './pages/protected/proctoring/ProctoringPage.tsx';
 import Summary from './pages/protected/proctoring/Summary.tsx';
 import Detail from './pages/protected/proctoring/Detail.tsx';
-import {SnackbarProvider} from 'notistack';
+import { SnackbarProvider } from 'notistack';
 const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-      <AppTheme>
-      <CssBaseline/>
-      <SnackbarProvider autoHideDuration={3000} anchorOrigin={{
-    vertical: 'bottom',
-    horizontal: 'right',
-  }}>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<ProtectedLayout/>} >
-              <Route index element={<HomePage/>}/>
-              <Route path="/proctoring/:examId/room/:roomId" element={<ProctoringPage/>}>
-                <Route index element={<Summary/>}/>
-                <Route path="user/:userId" element={<Detail/>}/>
-              </Route>
-          </Route>
-          <Route element={<PublicLayout/>}>
-              <Route path='sign-in' element={<SignInPage/>}/>
-              <Route path='sign-in-by-token' element={<SignInByToken/>}/>
-          </Route>
-           <Route path="*" element={<h1>404 Not Found</h1>} />
-        </Routes>
-      </BrowserRouter>
-      </SnackbarProvider>
-      </AppTheme>
+        <AppTheme>
+          <CssBaseline />
+          <SnackbarProvider autoHideDuration={3000} anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<ProtectedLayout />} >
+                  <Route index element={<HomePage />} />
+                  <Route path="/proctoring/:examId/room/:roomId" element={<ProctoringPage />}>
+                    <Route index element={<Summary />} />
+                    <Route path="user/:userId/:examineeId" element={<Detail />} />
+                  </Route>
+                </Route>
+                <Route element={<PublicLayout />}>
+                  <Route path='sign-in' element={<SignInPage />} />
+                  <Route path='sign-in-by-token' element={<SignInByToken />} />
+                </Route>
+                <Route path="*" element={<h1>404 Not Found</h1>} />
+              </Routes>
+            </BrowserRouter>
+          </SnackbarProvider>
+        </AppTheme>
       </QueryClientProvider>
     </AuthProvider>
   </StrictMode>,

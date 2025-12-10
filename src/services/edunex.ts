@@ -23,8 +23,9 @@ export function createEdunexApi({ getToken }: CreateLmsApiParams): LmsApiClient 
     baseURL,
     endpoints: {
       profile: "/login/me",
-      examinees:"/course/students",
+      examinees: "/course/students",
       exams: "/exam/exams/:examId",
+      examineeInfo: "/exam/studentexams?filter[exam_id][is]=:examId&filter[student_id][in]=:studentId&page[limit]=0&page[offset]=0",
     },
   };
 }

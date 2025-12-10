@@ -2,8 +2,9 @@ import type { AxiosInstance } from "axios";
 
 export interface LmsApiEndpoints {
   profile: string;
-  examinees:string;
+  examinees: string;
   exams: string;
+  examineeInfo: string;
 }
 
 export interface LmsApiClient {

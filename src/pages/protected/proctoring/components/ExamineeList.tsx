@@ -12,7 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import type { Examinee } from '../../../../data/data.types';
 import { useQuery } from '@tanstack/react-query';
 import { getLMSDataService } from '../../../../data';
-import {  useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import Loading from './Loading';
@@ -21,7 +21,7 @@ export function stringToColor(string: string) {
   let hash = 0;
   let i;
 
-   
+
   for (i = 0; i < string.length; i += 1) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
@@ -32,7 +32,7 @@ export function stringToColor(string: string) {
     const value = (hash >> (i * 8)) & 0xff;
     color += `00${value.toString(16)}`.slice(-2);
   }
-   
+
 
   return color;
 }
@@ -41,23 +41,23 @@ export function stringAvatar(name: string) {
   return {
     sx: {
       bgcolor: stringToColor(name),
-      marginLeft:1,
+      marginLeft: 1,
     },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1]?.[0]??''}`,
+    children: `${name.split(' ')[0][0]}${name.split(' ')[1]?.[0] ?? ''}`,
   };
 }
 
 function renderRow(props: ListChildComponentProps) {
-  const { index, style, data }:{data:Examinee[], index:number, style:React.CSSProperties} = props;
-  const {userId} = useParams()
+  const { index, style, data }: { data: Examinee[], index: number, style: React.CSSProperties } = props;
+  const { userId } = useParams()
   const navigate = useNavigate();
   return (
     <ListItem style={style} key={index} component="div" disablePadding>
-      <ListItemButton onClick={()=>{
-        navigate( `user/${data[index].lmsUserId}`)
-        
+      <ListItemButton onClick={() => {
+        navigate(`user/${data[index].lmsUserId}/${data[index].id}`)
+
       }} selected={userId === data[index].lmsUserId}>
-      <ListItemAvatar>
+        <ListItemAvatar>
           <Avatar {...stringAvatar(data[index].name)} />
         </ListItemAvatar>
         <ListItemText primary={data[index].name} secondary={data[index].code} />
@@ -67,34 +67,35 @@ function renderRow(props: ListChildComponentProps) {
 }
 
 export default function ExamineeList() {
-  const {roomId, examId} = useParams();
+  const { roomId, examId } = useParams();
   const [search, setSearch] = React.useState('');
-  const {data, isLoading} = useQuery({
-    queryKey: ['examinees',roomId],
-    queryFn: async ()=>{
-       const data = await getLMSDataService().getExaminees(examId!,roomId!);
+  const { data, isLoading } = useQuery({
+    queryKey: ['examinees', roomId],
+    queryFn: async () => {
+      const data = await getLMSDataService().getExaminees(examId!, roomId!);
       return data;
     },
   })
 
-  const filterData =data?.filter((item: Examinee) => (item.name.toLowerCase().includes(search.toLowerCase()) || item.code.toLowerCase().includes(search.toLowerCase())) );
+  const filterData = data?.filter((item: Examinee) => (item.name.toLowerCase().includes(search.toLowerCase()) || item.code.toLowerCase().includes(search.toLowerCase())));
 
   if (isLoading) {
-    return <Loading/>
+    return <Loading />
   }
   return (
     <Box
-      sx={{ width: '100%', 
+      sx={{
+        width: '100%',
         // height: 400, maxWidth: 360, 
-        px:1,
+        px: 1,
         // bgcolor: 'background.paper' 
       }}
     >
-      <Typography variant="h6" sx={{my:1}}>Examinee List ({data?.length ?? 0})</Typography>
+      <Typography variant="h6" sx={{ my: 1 }}>Examinee List ({data?.length ?? 0})</Typography>
       <TextField
         placeholder="Search Examinee Name or Code..."
         fullWidth
-        onChange={(e) => {setSearch(e.target.value)}}
+        onChange={(e) => { setSearch(e.target.value) }}
         slotProps={{
           input: {
             endAdornment: (
@@ -105,7 +106,7 @@ export default function ExamineeList() {
           },
         }}
       />
-      <Divider sx={{my:1}}/>
+      <Divider sx={{ my: 1 }} />
       <FixedSizeList
         height={350}
         width="100%"

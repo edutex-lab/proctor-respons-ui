@@ -6,6 +6,8 @@ export type Examinee = {
     lmsUserId: string;
     name: string;
     code: string;
+    start_at?: string;
+    finished_at?: string;
 }
 
 export type ExamInfo = {
@@ -29,17 +31,17 @@ export type ClassRoom = {
 }
 
 export type MultiClassificationResult = {
-  category: string;
-  final_decision: string;
-  description: string;
-  chain_of_thought: string | null;
+    category: string;
+    final_decision: string;
+    description: string;
+    chain_of_thought: string | null;
 }
 
-export type ProctorClassificationResult ={
+export type ProctorClassificationResult = {
     category?: string;
     final_decision: string;
 }
-export type Screenshot ={
+export type Screenshot = {
     id: string;
     filePath: string;
     fileBucket: string;
@@ -53,16 +55,25 @@ export type Screenshot ={
 export interface LMSDataService {
     getExaminees(examId: string, roomId: string): Promise<Examinee[]>;
     getExamInfo(examId: string): Promise<ExamInfo>;
+    getExamineeInfo(examId: string, userId: string, examineeId: string): Promise<Examinee>;
 
 }
 
 
-export interface AppDataService{
+export type ExamineeStats = {
+    cheatingScore: number;
+    estimatedTotalScreens: number;
+    start_at: string;
+    finished_at: string;
+}
+
+export interface AppDataService {
     setRoomForUsers(examId: string, roomId: string, users: Examinee[]): Promise<void>;
-    getListenScreenshotsByUserId(examId: string | undefined,  userId: string | undefined, callback:(querySnapshot: QuerySnapshot | null) => void): Unsubscribe;
+    getListenScreenshotsByUserId(examId: string | undefined, userId: string | undefined, callback: (querySnapshot: QuerySnapshot | null) => void): Unsubscribe;
     // getListenScreenshotsByRoomId(examId: string, roomId: string)
     setProctorClassificationResult(examId: string, screenshotId: string, result: ProctorClassificationResult): Promise<void>;
-    getListenVerificationByRoomId(examId: string, roomId: string, callback:(querySnapshot: QuerySnapshot | null) => void): Unsubscribe;
-    sendWarningMessage(examId: string,  userId: string, message: string, createdBy: User): Promise<void>;
+    getListenVerificationByRoomId(examId: string, roomId: string, callback: (querySnapshot: QuerySnapshot | null) => void): Unsubscribe;
+    sendWarningMessage(examId: string, userId: string, message: string, createdBy: User): Promise<void>;
+    updateExamineeStats(examId: string, userId: string, stats: ExamineeStats): Promise<void>;
 
 }

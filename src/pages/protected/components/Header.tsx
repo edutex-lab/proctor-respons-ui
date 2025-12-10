@@ -14,8 +14,13 @@ import { useVerification } from '../../../data/VerificationProvider';
 // import Search from './Search';
 
 export default function Header() {
-  const {user} = useAuth();
-  const {data, setDialogOpen} = useVerification();
+  const { user } = useAuth();
+  const { data, setDialogOpen, setVerificationType } = useVerification();
+
+  const handleReview = (type: string) => {
+    setVerificationType(type);
+    setDialogOpen(true);
+  };
   return (
     <Stack
       direction="row"
@@ -35,37 +40,37 @@ export default function Header() {
       <Stack direction="row" sx={{ gap: 1 }}>
         {/* <Search /> */}
         {/* <CustomDatePicker /> */}
-        <MenuButton onClick={()=>{setDialogOpen(true)}} showBadge={data?.length > 0} badgeContent={data?.length} aria-label="Open notifications">
+        <MenuButton onClick={() => { handleReview('all') }} showBadge={data?.length > 0} badgeContent={data?.length} aria-label="Open notifications">
           <NotificationsRoundedIcon />
         </MenuButton>
 
         {/* <ColorModeIconDropdown /> */}
         <Stack
-        direction="row"
-        sx={{
-          // p: 2,
-          gap: 1,
-          // alignItems: 'center',
-          // borderTop: '1px solid',
-          // borderColor: 'divider',
-        }}
-      >
-        <Avatar
-          sizes="small"
-          alt={user?.displayName ?? 'A'}
-          src={user?.photoURL ?? ''}
-          sx={{ width: 36, height: 36 }}
-        />
-        <Box sx={{ mr: 'auto' }}>
-          <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-            {user?.displayName ?? ''}
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-          {user?.email?.split('@')[0] ?? ''}
-          </Typography>
-        </Box>
-        {/* <OptionsMenu /> */}
-      </Stack>
+          direction="row"
+          sx={{
+            // p: 2,
+            gap: 1,
+            // alignItems: 'center',
+            // borderTop: '1px solid',
+            // borderColor: 'divider',
+          }}
+        >
+          <Avatar
+            sizes="small"
+            alt={user?.displayName ?? 'A'}
+            src={user?.photoURL ?? ''}
+            sx={{ width: 36, height: 36 }}
+          />
+          <Box sx={{ mr: 'auto' }}>
+            <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
+              {user?.displayName ?? ''}
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              {user?.email?.split('@')[0] ?? ''}
+            </Typography>
+          </Box>
+          {/* <OptionsMenu /> */}
+        </Stack>
       </Stack>
     </Stack>
   );

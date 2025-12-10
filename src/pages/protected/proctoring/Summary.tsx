@@ -22,16 +22,7 @@ export default function Summary() {
                         <>
                                 <WarningIcon sx={{ color: "red", fontSize: 100 }} />
                                 <Typography variant="h6" sx={{ my: 1 }}>  Suspicious or Dishonest Activity Detected!</Typography>
-                                <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-                                        {suspiciousCount > 0 && (
-                                                <Button
-                                                        variant="contained"
-                                                        color="warning"
-                                                        onClick={() => handleReview('Suspicious')}
-                                                >
-                                                        Review {suspiciousCount} Suspicious Activit{suspiciousCount === 1 ? 'y' : 'ies'}
-                                                </Button>
-                                        )}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2, minWidth: 300 }}>
                                         {dishonestCount > 0 && (
                                                 <Button
                                                         variant="contained"
@@ -39,6 +30,16 @@ export default function Summary() {
                                                         onClick={() => handleReview('Dishonest')}
                                                 >
                                                         Review {dishonestCount} Dishonest Activit{dishonestCount === 1 ? 'y' : 'ies'}
+                                                </Button>
+                                        )}
+                                        {suspiciousCount > 0 && (
+                                                <Button
+                                                        variant="contained"
+                                                        color="warning"
+                                                        onClick={() => handleReview('Suspicious')}
+                                                        sx={{ color: 'white' }}
+                                                >
+                                                        Review {suspiciousCount} Suspicious Activit{suspiciousCount === 1 ? 'y' : 'ies'}
                                                 </Button>
                                         )}
                                         <Button
