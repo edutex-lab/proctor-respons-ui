@@ -153,7 +153,7 @@ export default function VerificationDialog({ open, onClose, data }: Verification
     }
 
     // Simulate an API call
-    await getAppDataServices().setProctorClassificationResult(examId!, log?.id, { final_decision: proctorDecision })
+    await getAppDataServices().setProctorClassificationResult(examId!, log?.id, { final_decision: proctorDecision, category: proctorCategory})
 
     setIsSaving(false);
     setProctorCategory("Category");
