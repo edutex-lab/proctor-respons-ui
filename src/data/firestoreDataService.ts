@@ -24,7 +24,7 @@ export const firestoreDataService: AppDataService = {
         const screenshotCollectioRef = collection(db, 'screenshots');
         const filterByExam = where('examId', '==', Number(examId));
         const filterByUser = where('userId', '==', Number(userId));
-        const filterByAIFinalDecision = where('multiClassificationResult.final_decision', "in", ["Suspicious", "Dishonest"])
+        const filterByAIFinalDecision = where('multiClassificationResult.final_decision', "in", ["Suspicious", "Dishonest", "Clean"])
         const orderByCreatedAt = orderBy('createdAt', 'desc');
         const q = query(screenshotCollectioRef, filterByUser, filterByExam, filterByAIFinalDecision, orderByCreatedAt);
 
