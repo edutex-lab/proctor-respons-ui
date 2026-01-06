@@ -216,7 +216,11 @@ export default function VerificationDialog({ open, onClose, data }: Verification
                       onLoad={() => setImgLoaded(true)}
                       onError={() => setImgLoaded(true)}
                       alt={`Screenshot for user ${log?.userId}`}
-                      style={{ maxHeight: '380px', objectFit: 'contain', borderRadius: '8px', display: imgLoaded ? 'block' : 'none' }}
+                      style={{ 
+                        ...imageUrl.includes("_ro-0_")? { maxHeight: '380px'}:{ maxWidth: '380px', transform:'rotate(-90deg)'}, 
+                        objectFit: 'contain', 
+                        borderRadius: '8px', 
+                        display: imgLoaded ? 'block' : 'none' }}
                     />
                   </Grid>
 

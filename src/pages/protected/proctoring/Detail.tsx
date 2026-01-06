@@ -123,7 +123,12 @@ const LogItem = memo((props: ListChildComponentProps) => {
               loading="lazy"
               src={imageUrl}
               alt={`Screenshot for user ${log.userId}`}
-              style={{ maxHeight: '380px', objectFit: 'contain', borderRadius: '8px' }}
+              style={{ 
+                
+                ...imageUrl.includes("_ro-0_")? { maxHeight: '380px'}:{ maxWidth: '380px', transform:'rotate(-90deg)'},
+                 objectFit: 'contain', 
+                 borderRadius: '8px' 
+                }}
             />
           </Grid>
 
